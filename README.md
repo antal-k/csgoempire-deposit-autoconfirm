@@ -1,3 +1,5 @@
+# USE THIS CODE AT YOUR OWN RISK, I DON'T TAKE RESPONSIBILITY FOR TRADE BANS
+
 # csgoempire-deposit-autoconfirm
 
 # Install
