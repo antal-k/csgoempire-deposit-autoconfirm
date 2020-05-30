@@ -3,6 +3,7 @@
 #### USE THIS CODE AT YOUR OWN RISK, I DON'T TAKE RESPONSIBILITY FOR STEAM TRADE BANS
 
 For steam part, you need [SDA](https://github.com/Jessecar96/SteamDesktopAuthenticator) to get the sharedSecret & identitySecret.
+#### If you remove your authenticator from your mobile, you will face 15days tradeban
 
 
 # Install
