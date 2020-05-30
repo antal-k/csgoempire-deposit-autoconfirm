@@ -5,11 +5,13 @@
 For steam part, you need [SDA](https://github.com/Jessecar96/SteamDesktopAuthenticator) to get the sharedSecret & identitySecret.
 #### If you remove your authenticator from your mobile, you will face 15days tradeban
 
-
-# Install
-    Install nodejs
-    clone the repo
-    npm i 
+# How to
+    Install nodejs -> https://nodejs.org/dist/v12.17.0/node-v12.17.0-x64.msi
+    clone this repository
+    unzip
+    open a cmd line in that folder you extracted the files
+    type: npm i (it will install all the dependencies)
+    create the config.json file (description below)
     node index.js
 # config.json
 
