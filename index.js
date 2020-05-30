@@ -14,7 +14,8 @@ if(config.steam) {
   const manager = new TradeOfferManager({
     "domain": config.domain,
     "language": "en",
-    "pollInterval": 30000
+    "pollInterval": 30000,
+    "cancelTime": 9 * 60 * 1000, // cancel outgoing offers after 9mins
   });
   const logOnOptions = {
     "accountName": config.accountName,
