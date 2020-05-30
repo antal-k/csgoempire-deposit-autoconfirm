@@ -1,5 +1,11 @@
 # csgoempire-deposit-autoconfirm
 
+# Install
+    Install nodejs
+    clone the repo
+    npm i 
+    node index.js
+# config.json
 Set steam to false if you dont want to send the offer automatically. (need steam-desktop-authenticator to use that properly)
 
 Set discord to false if you dont want to use that.
