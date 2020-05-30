@@ -19,7 +19,14 @@ Set steam to false if you dont want to send the offer automatically. (need steam
 
 Set discord to false if you dont want to use that.
 
-
+# Cookies
+This script need 2 cookie from your browser. (Sadly empire doesn't support API keys for their api yet.)
+    
+    PHPSESSID
+    do_not_share_this_with_anyone_not_even_staff
+    
+You have to put the correct cookies to the config.json
+    
 Create a config file (config.json) like:
 ```
 {
