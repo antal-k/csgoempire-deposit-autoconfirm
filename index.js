@@ -97,7 +97,8 @@ function init() {
     })
     switch (status.data.status_text) {
       case 'Processing':
-        console.log(`${itemNames.join(', ')} item listed.`);
+        // maybe we dont really need this
+        // console.log(`${itemNames.join(', ')} item listed.`);
         break;
       case 'Confirming':
         confirmTrade(status.data.id).then(() => {
