@@ -1,1 +1,0 @@
-# csgoempire-deposit-autoconfirm
