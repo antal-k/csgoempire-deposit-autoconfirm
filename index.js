@@ -9,9 +9,10 @@ const io = require('socket.io-client'),
   config = require('./config.json'),
   app = express();
 
+let manager = null;
 // if steam deposit enabled
 if(config.steam) {
-  const manager = new TradeOfferManager({
+  manager = new TradeOfferManager({
     "domain": config.domain,
     "language": "en",
     "pollInterval": 30000,
