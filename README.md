@@ -18,7 +18,7 @@ Set steam to false if you dont want to send the offer automatically. (need steam
 Set discord to false if you dont want to use that.
 
 
-Create a config file like:
+Create a config file (config.json) like:
 ```
 {
     "steam": true,
