@@ -7,11 +7,11 @@ For steam part, you need [SDA](https://github.com/Jessecar96/SteamDesktopAuthent
 
 # How to
     Install nodejs -> https://nodejs.org/dist/v12.17.0/node-v12.17.0-x64.msi
-    clone this repository
-    unzip
-    open a cmd line in that folder you extracted the files
-    type: npm i (it will install all the dependencies)
-    create the config.json file (description below)
+    Clone this repository
+    Unzip
+    Open a cmd line in that folder you extracted the files
+    Type: npm i (it will install all the dependencies)
+    Create the config.json file (description below)
     node index.js
 # config.json
 
