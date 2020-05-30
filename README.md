@@ -1,6 +1,6 @@
-# USE THIS CODE AT YOUR OWN RISK, I DON'T TAKE RESPONSIBILITY FOR STEAM TRADE BANS
+## CSGOEmpire deposit bot w/ auto confirm, steam offer send & discord integration
 
-# csgoempire-deposit-autoconfirm
+#### USE THIS CODE AT YOUR OWN RISK, I DON'T TAKE RESPONSIBILITY FOR STEAM TRADE BANS
 
 For steam part, you need [SDA](https://github.com/Jessecar96/SteamDesktopAuthenticator) to get the sharedSecret & identitySecret.
 
@@ -11,6 +11,7 @@ For steam part, you need [SDA](https://github.com/Jessecar96/SteamDesktopAuthent
     npm i 
     node index.js
 # config.json
+
 Set steam to false if you dont want to send the offer automatically. (need steam-desktop-authenticator to use that properly)
 
 Set discord to false if you dont want to use that.
