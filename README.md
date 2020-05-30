@@ -1,8 +1,9 @@
 # USE THIS CODE AT YOUR OWN RISK, I DON'T TAKE RESPONSIBILITY FOR STEAM TRADE BANS
 
 # csgoempire-deposit-autoconfirm
-    For steam part, you need SDA to get the sharedSecret & identitySecret.
-    [SDA](https://github.com/Jessecar96/SteamDesktopAuthenticator)
+
+For steam part, you need [SDA](https://github.com/Jessecar96/SteamDesktopAuthenticator) to get the sharedSecret & identitySecret.
+
 
 # Install
     Install nodejs
