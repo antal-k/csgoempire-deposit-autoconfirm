@@ -5,9 +5,28 @@ const io = require('socket.io-client'),
   SteamCommunity = require('steamcommunity'),
   steam = new SteamCommunity(),
   fs = require('fs'),
+  dateFormat = require('dateformat'),
+  util = require('util'),
   TradeOfferManager = require('steam-tradeoffer-manager'),
   config = require('./config.json'),
   app = express();
+
+const colors = {
+    FgBlack: "\x1b[30m",
+    FgRed: "\x1b[31m",
+    FgGreen: "\x1b[32m",
+    FgYellow: "\x1b[33m",
+    FgBlue: "\x1b[34m",
+    FgMagenta: "\x1b[35m",
+    FgCyan: "\x1b[36m",
+    FgWhite: "\x1b[37m",
+};
+const log = console.log;
+
+console.log = function (d, dc = false, color = '\x1b[0m') {
+    log(color, "[" + dateFormat(new Date(), "yyyy-mm-dd H:MM:ss") + "] " + util.format(d));
+};
+
 
 let manager = null;
 // if steam deposit enabled
@@ -140,9 +159,11 @@ function sendSteamOffer(sendItems, tradeUrl) {
   offer.addMyItems(items);
   offer.send(function (err, status) {
     if (offer.id !== null) {
-      steam.acceptConfirmationForObject(config.identitySecret, offer.id, status => {
-        console.log('Deposit item sent & confirmed');
-      })
+      setTimeout( () => {
+        steam.acceptConfirmationForObject(config.identitySecret, offer.id, status => {
+          console.log('Deposit item sent & confirmed');
+        });
+      }, 3000);
     }
   });
 }

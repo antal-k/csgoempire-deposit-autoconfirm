@@ -9,11 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dateformat": "^3.0.3",
     "express": "^4.17.1",
     "request": "^2.88.2",
     "socket.io-client": "^2.3.0",
     "steam-totp": "^2.1.1",
     "steam-tradeoffer-manager": "^2.10.2",
-    "steamcommunity": "^3.41.4"
+    "steamcommunity": "^3.41.4",
+    "util": "^0.12.3"
   }
 }
