@@ -12,62 +12,28 @@ const io = require('socket.io-client'),
   app = express();
 
 const colors = {
-    FgBlack: "\x1b[30m",
-    FgRed: "\x1b[31m",
-    FgGreen: "\x1b[32m",
-    FgYellow: "\x1b[33m",
-    FgBlue: "\x1b[34m",
-    FgMagenta: "\x1b[35m",
-    FgCyan: "\x1b[36m",
-    FgWhite: "\x1b[37m",
+  FgBlack: "\x1b[30m",
+  FgRed: "\x1b[31m",
+  FgGreen: "\x1b[32m",
+  FgYellow: "\x1b[33m",
+  FgBlue: "\x1b[34m",
+  FgMagenta: "\x1b[35m",
+  FgCyan: "\x1b[36m",
+  FgWhite: "\x1b[37m",
 };
 const log = console.log;
 
 console.log = function (d, dc = false, color = '\x1b[0m') {
-    log(color, "[" + dateFormat(new Date(), "yyyy-mm-dd H:MM:ss") + "] " + util.format(d));
+  log(color, "[" + dateFormat(new Date(), "yyyy-mm-dd H:MM:ss") + "] " + util.format(d));
 };
 
 
-let manager = null;
-// if steam deposit enabled
-if(config.steam) {
-  manager = new TradeOfferManager({
-    "domain": config.domain,
-    "language": "en",
-    "pollInterval": 30000,
-    "cancelTime": 9 * 60 * 1000, // cancel outgoing offers after 9mins
-  });
-  const logOnOptions = {
-    "accountName": config.accountName,
-    "password": config.password,
-    "twoFactorCode": SteamTotp.getAuthCode(config.sharedSecret)
-  };
-
-  if (fs.existsSync('steamguard.txt')) {
-    logOnOptions.steamguard = fs.readFileSync('steamguard.txt').toString('utf8');
-  }
-  
-  if (fs.existsSync('polldata.json')) {
-    manager.pollData = JSON.parse(fs.readFileSync('polldata.json'));
-  }
-  
-  steam.login(logOnOptions, function (err, sessionID, cookies, steamguard) {
-    if (err) {
-      console.log("Steam login fail: " + err.message);
-    }
-    fs.writeFile('steamguard.txt', steamguard, (err) => {
-      if (err) throw err;
-    });
-    console.log("Logged into Steam");
-    manager.setCookies(cookies, function (err) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-    });
-  });
-}
-
+let manager = new TradeOfferManager({
+  "domain": config.domain,
+  "language": "en",
+  "pollInterval": 30000,
+  "cancelTime": 9 * 60 * 1000, // cancel outgoing offers after 9mins
+});
 // do not terminate the app
 app.listen(config.port);
 
@@ -93,7 +59,7 @@ getUser().then(user => {
 const offerSentFor = [];
 
 // dodge the first few trade_status event to prevent the double item send if the offer is already at 'Sending' state
-let dodge = true;
+let dodge = false;
 
 function init() {
   const socket = io(
@@ -102,7 +68,7 @@ function init() {
   );
   socket.on("connect", () => {
     console.log('Connected to empire.');
-    setTimeout( () => {
+    setTimeout(() => {
       dodge = false;
     }, 1000);
   });
@@ -122,7 +88,7 @@ function init() {
         break;
       case 'Confirming':
         confirmTrade(status.data.id).then(() => {
-          if(config.discord) {
+          if (config.discord) {
             sendDiscord(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} are confirming.`);
           }
           console.log(`Deposit offer for ${itemNames.join(', ')} are confirming.`);
@@ -132,12 +98,12 @@ function init() {
         break;
       case 'Sending':
         // do not send duplicated offers
-        if(offerSentFor.indexOf(status.data.id) === -1) {
+        if (offerSentFor.indexOf(status.data.id) === -1) {
           offerSentFor.push(status.data.id);
-          if(config.steam) {
+          if (config.steam) {
             sendSteamOffer(status.data.items, status.data.metadata.trade_url);
           }
-          if(config.discord) {
+          if (config.discord) {
             sendDiscord(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} accepted, go send go go`);
           }
           console.log(`${itemNames.join(', ')} item confirmed.`);
@@ -147,25 +113,29 @@ function init() {
   });
 }
 function sendSteamOffer(sendItems, tradeUrl) {
-  const items = [];
-  sendItems.forEach(item => {
-    items.push({
-      assetid: item.asset_id,
-      appid: item.app_id,
-      contextid: item.context_id,
-    });
-  });
-  var offer = manager.createOffer(tradeUrl);
-  offer.addMyItems(items);
-  offer.send(function (err, status) {
-    if (offer.id !== null) {
-      setTimeout( () => {
-        steam.acceptConfirmationForObject(config.identitySecret, offer.id, status => {
-          console.log('Deposit item sent & confirmed');
+  if (config.steam) {
+    steamLogin().then(() => {
+      const items = [];
+      sendItems.forEach(item => {
+        items.push({
+          assetid: item.asset_id,
+          appid: item.app_id,
+          contextid: item.context_id,
         });
-      }, 3000);
-    }
-  });
+      });
+      var offer = manager.createOffer(tradeUrl);
+      offer.addMyItems(items);
+      offer.send(function (err, status) {
+        if (offer.id !== null) {
+          setTimeout(() => {
+            steam.acceptConfirmationForObject(config.identitySecret, offer.id, status => {
+              console.log('Deposit item sent & confirmed');
+            });
+          }, 3000);
+        }
+      });
+    });
+  }
 }
 function confirmTrade(depositId) {
   return new Promise((resolve, reject) => {
@@ -223,5 +193,38 @@ function sendDiscord(msg) {
     },
   }, (error, response, b) => {
     //
+  });
+}
+
+function steamLogin() {
+  return new Promise((resolve, reject) => {
+    const logOnOptions = {
+      "accountName": config.accountName,
+      "password": config.password,
+      "twoFactorCode": SteamTotp.getAuthCode(config.sharedSecret)
+    };
+    if (fs.existsSync('steamguard.txt')) {
+      logOnOptions.steamguard = fs.readFileSync('steamguard.txt').toString('utf8');
+    }
+
+    if (fs.existsSync('polldata.json')) {
+      manager.pollData = JSON.parse(fs.readFileSync('polldata.json'));
+    }
+
+    steam.login(logOnOptions, function (err, sessionID, cookies, steamguard) {
+      if (err) {
+        console.log("Steam login fail: " + err.message);
+      }
+      fs.writeFile('steamguard.txt', steamguard, (err) => {
+        if (err) throw err;
+      });
+      manager.setCookies(cookies, function (err) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        resolve(true);
+      });
+    });
   });
 }
