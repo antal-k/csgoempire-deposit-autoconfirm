@@ -9,7 +9,15 @@ const io = require('socket.io-client'),
   util = require('util'),
   TradeOfferManager = require('steam-tradeoffer-manager'),
   config = require('./config.json'),
-  app = express();
+  Push = require( 'pushover-notifications' );
+
+let pushoverClient = undefined;
+if(config.pushover) {
+  pushoverClient = new Push({
+    user: config.pushoverUser,
+    token: config.pushoverToken,
+  });
+}
 
 const colors = {
   FgBlack: "\x1b[30m",
@@ -34,13 +42,16 @@ let manager = new TradeOfferManager({
   "pollInterval": 30000,
   "cancelTime": 9 * 60 * 1000, // cancel outgoing offers after 9mins
 });
+
 // do not terminate the app
-app.listen(config.port);
+setInterval(function() {
+  // 
+}, 1000 * 60 * 60);
 
 let mainUser = null;
 
 const mainHeaders = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+  'User-Agent': config.useragent,
   'Referer': 'https://csgoempire.com/withdraw',
   'Accept': '/',
   'Connection': 'keep-alive',
@@ -89,7 +100,7 @@ function init() {
       case 'Confirming':
         confirmTrade(status.data.id).then(() => {
           if (config.discord) {
-            sendDiscord(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} are confirming.`);
+            sendMessage(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} are confirming.`, config.discord, config.pushover);
           }
           console.log(`Deposit offer for ${itemNames.join(', ')} are confirming.`);
         }).catch(err => {
@@ -103,9 +114,7 @@ function init() {
           if (config.steam) {
             sendSteamOffer(status.data.items, status.data.metadata.trade_url);
           }
-          if (config.discord) {
-            sendDiscord(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} accepted, go send go go`);
-          }
+          sendMessage(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} accepted, go send go go`, config.discord, config.pushover);
           console.log(`${itemNames.join(', ')} item confirmed.`);
         }
         break;
@@ -183,17 +192,30 @@ function getUser() {
   });
 }
 
-function sendDiscord(msg) {
-  request({
-    url: config.discordHook,
-    method: 'POST',
-    json: true,
-    body: {
-      content: msg,
-    },
-  }, (error, response, b) => {
-    //
-  });
+function sendMessage(msg, discord = false, pushover = false) {
+  if(discord) {
+    request({
+      url: config.discordHook,
+      method: 'POST',
+      json: true,
+      body: {
+        content: msg,
+      },
+    }, (error, response, b) => {
+      //
+    });
+  }
+  if(pushover) {
+    pushoverClient.send({
+      message: msg,
+      title: '[CSGOEMPIRE] Deposit',
+      priority: 1,
+    }, (err, result) => {
+      if (err) {
+        throw err;
+      }
+    });
+  }
 }
 
 function steamLogin() {

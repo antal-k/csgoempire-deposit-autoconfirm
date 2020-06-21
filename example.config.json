@@ -1,0 +1,16 @@
+{
+    "steam": false,
+    "discord": false,
+    "pushover": false,
+    "domain": "localhost",
+    "identitySecret": "",
+    "accountName": "",
+    "password": "",
+    "sharedSecret": "",
+    "mainCookie": "PHPSESSID=something; do_not_share_this_with_anyone_not_even_staff=something",
+    "discordHook": "",
+    "pushoverUser": "",
+    "pushoverToken": "",
+    "discordUserId": "",
+    "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+}
