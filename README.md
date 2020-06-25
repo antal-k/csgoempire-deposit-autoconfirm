@@ -40,6 +40,7 @@ Create a config file (config.json) like:
     "sharedSecret": "leave-blank-if-steam-false",
     "identitySecret": "leave-blank-if-steam-false",
     "discordHook": "leave-blank-if-discord-false",
-    "discordUserId": "leave-blank-if-discord-false"
+    "discordUserId": "leave-blank-if-discord-false",
+    "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
 }
 ```
