@@ -111,6 +111,8 @@ function init() {
         // do not send duplicated offers
         if (offerSentFor.indexOf(status.data.id) === -1) {
           offerSentFor.push(status.data.id);
+          console.log(`Tradelink: ${status.data.metadata.trade_url}`);
+          console.log(`items: ${itemNames.join(', ')}`);
           if (config.steam) {
             sendSteamOffer(status.data.items, status.data.metadata.trade_url);
           }
