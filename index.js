@@ -9,10 +9,10 @@ const io = require('socket.io-client'),
   util = require('util'),
   TradeOfferManager = require('steam-tradeoffer-manager'),
   config = require('./config.json'),
-  Push = require( 'pushover-notifications' );
+  Push = require('pushover-notifications');
 
 let pushoverClient = undefined;
-if(config.pushover) {
+if (config.pushover) {
   pushoverClient = new Push({
     user: config.pushoverUser,
     token: config.pushoverToken,
@@ -44,7 +44,7 @@ let manager = new TradeOfferManager({
 });
 
 // do not terminate the app
-setInterval(function() {
+setInterval(function () {
   // 
 }, 1000 * 60 * 60);
 
@@ -74,11 +74,33 @@ let dodge = false;
 
 function init() {
   const socket = io(
-    `wss://csgoempire.com/?hash=${mainUser.user_hash}&user_id=${mainUser.id}`,
-    { path: "/bot-manager" }
+    `wss://roulette.csgoempire.com/notifications`,
+    { 
+      path: "/s",
+      transports: ['websocket'],
+      secure: true,
+      rejectUnauthorized: false,
+      reconnect: true,
+      extraHeaders: {
+        'User-agent': config.useragent
+      },
+    }
   );
+  socket.on('error', err => {
+    console.log(`error: ${err}`);
+  })
   socket.on("connect", () => {
     console.log('Connected to empire.');
+    requestMetaModel().then( data => {  
+      socket.emit('identify', {
+        uid: data.user.id,
+        model: data.user,
+        authorizationToken: data.socket_token,
+        signature: data.socket_signature
+      });
+    }).catch(ee => {
+      console.log(ee);
+    });
     setTimeout(() => {
       dodge = false;
     }, 1000);
@@ -172,6 +194,29 @@ function confirmTrade(depositId) {
   });
 }
 
+function requestMetaModel() {
+    return new Promise((resolve, reject) => {
+        const options = {
+            url: 'https://csgoempire.com/api/v2/metadata',
+            method: 'GET',
+            gzip: true,
+            json: true,
+            headers: {
+              Cookie: config.mainCookie,
+              ...mainHeaders,
+            },
+        };
+
+        request(options, (error, response, body) => {
+          if (!error && response.statusCode === 200) {
+            resolve(body);
+          } else {
+            reject(response);
+          }
+        });
+    });
+}
+
 function getUser() {
   return new Promise((resolve, reject) => {
     const options = {
@@ -195,7 +240,7 @@ function getUser() {
 }
 
 function sendMessage(msg, discord = false, pushover = false) {
-  if(discord) {
+  if (discord) {
     request({
       url: config.discordHook,
       method: 'POST',
@@ -207,7 +252,7 @@ function sendMessage(msg, discord = false, pushover = false) {
       //
     });
   }
-  if(pushover) {
+  if (pushover) {
     pushoverClient.send({
       message: msg,
       title: '[CSGOEMPIRE] Deposit',
