@@ -37,6 +37,8 @@ Create a config file (config.json) like:
     "domain": "leave-blank-if-steam-false",
     "accountName": "leave-blank-if-steam-false",
     "password": "leave-blank-if-steam-false",
+    "pushoverUser": "",
+    "pushoverToken": "",
     "sharedSecret": "leave-blank-if-steam-false",
     "identitySecret": "leave-blank-if-steam-false",
     "discordHook": "leave-blank-if-discord-false",
