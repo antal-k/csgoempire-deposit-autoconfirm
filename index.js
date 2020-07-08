@@ -17,6 +17,15 @@ if (config.pushover) {
     user: config.pushoverUser,
     token: config.pushoverToken,
   });
+  pushoverClient.send({
+    message: 'Bot Initialized',
+    title: '[CSGOEMPIRE] Deposit',
+    priority: 1,
+  }, (err, result) => {
+    if (err) {
+      throw err;
+    }
+  });
 }
 
 const colors = {
