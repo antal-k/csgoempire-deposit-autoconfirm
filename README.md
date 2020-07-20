@@ -32,6 +32,7 @@ Create a config file (config.json) like:
 {
     "steam": true,
     "discord": true,
+    "pushover": false,
     "mainCookie": "PHPSESSID=csogempire_phpsessid-cookie; do_not_share_this_with_anyone_not_even_staff=csogempire_donotsharethiswithanyonenotevenstaff_cookie",
     "port": 3000,
     "domain": "leave-blank-if-steam-false",
