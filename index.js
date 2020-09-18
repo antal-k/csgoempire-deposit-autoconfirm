@@ -1,3 +1,5 @@
+let ts = Date.now()
+
 const io = require('socket.io-client'),
   request = require('request'),
   SteamTotp = require('steam-totp'),
@@ -120,8 +122,10 @@ function init() {
     }
 
     const itemNames = [];
+	const itemPrices = [];
     status.data.items.forEach(item => {
       itemNames.push(item.market_name);
+	  itemPrices.push(item.market_value);
     })
     switch (status.data.status_text) {
       case 'Processing':
@@ -147,10 +151,21 @@ function init() {
           if (config.steam) {
             sendSteamOffer(status.data.items, status.data.metadata.trade_url);
           }
-          sendMessage(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} accepted, go send go go`, config.discord, config.pushover);
-          console.log(`${itemNames.join(', ')} item confirmed.`);
+          sendMessage(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} Value price ${itemPrices.join(', ')} accepted, go send go go`, config.discord, config.pushover);
+          console.log(`${itemNames.join(', ')} item confirmed. price ${itemPrices.join(', ')}`);
         }
         break;
+		
+	  case 'Completed':
+		//console.log(`Item sold successfully`);
+		sendMessage(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} has sold for ${itemPrices.join(', ')}`,config.discord, config.pushover);
+		console.log(`${itemNames.join(', ')} has sold for ${itemPrices.join(', ')}`);
+		break;
+		
+	  case 'TimedOut':
+		sendMessage(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} wasn't accepted`,config.discord, config.pushover);
+		console.log(`${itemNames.join(', ')} was not accepted by buyer.`);
+		break;
     }
   });
 }
@@ -288,7 +303,9 @@ function steamLogin() {
     if (fs.existsSync('polldata.json')) {
       manager.pollData = JSON.parse(fs.readFileSync('polldata.json'));
     }
-
+	
+	if ((Date.now()-ts)/1000 > 1800) resolve();
+	
     steam.login(logOnOptions, function (err, sessionID, cookies, steamguard) {
       if (err) {
         console.log("Steam login fail: " + err.message);
