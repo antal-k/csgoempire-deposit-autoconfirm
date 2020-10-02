@@ -12,6 +12,7 @@ const io = require('socket.io-client'),
   config = require('./config.json'),
   Push = require('pushover-notifications');
 
+let ts = 0;
 let pushoverClient = undefined;
 if (config.pushover) {
   pushoverClient = new Push({
@@ -303,11 +304,11 @@ function steamLogin() {
       manager.pollData = JSON.parse(fs.readFileSync('polldata.json'));
     }
 
-    if ((Date.now() - ts) < 30 * 60 * 1000) {
+    if ((new Date() - ts) < 30 * 60 * 1000) {
       return resolve();
-    } else {
-      ts = new Date();
     }
+
+    ts = new Date();
 
     steam.login(logOnOptions, function (err, sessionID, cookies, steamguard) {
       if (err) {
