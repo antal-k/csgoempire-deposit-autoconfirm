@@ -11,7 +11,8 @@ const io = require('socket.io-client'),
   TradeOfferManager = require('steam-tradeoffer-manager'),
   config = require('./config.json'),
   Push = require('pushover-notifications');
-
+  open = require('open');
+  
 let ts = 0;
 let pushoverClient = undefined;
 if (config.pushover) {
@@ -146,10 +147,21 @@ function init() {
         // do not send duplicated offers
         if (offerSentFor.indexOf(status.data.id) === -1) {
           offerSentFor.push(status.data.id);
-          console.log(`Tradelink: ${status.data.metadata.trade_url}`);
+          const tradeURL = status.data.metadata.trade_url;
+          console.log(`Tradelink: ${tradeURL}`);
           console.log(`items: ${itemNames.join(', ')}`);
+
           if (config.steam) {
-            sendSteamOffer(status.data.items, status.data.metadata.trade_url);
+            sendSteamOffer(status.data.items, tradeURL);
+          } else if (config.csgoTraderSend) {
+            const assetIds = [];
+            status.data.items.forEach(item => {
+              assetIds.push( item.asset_id);
+            });
+            console.log('Opening send link in browser.');
+            (async () => { // opens the link in chrome
+              await open(`${tradeURL}&csgotrader_send=your_id_730_2_${assetIds.toString()}`, {app: 'chrome'});
+            })();
           } else {
 			      sendMessage(`<@${config.discordUserId}> Deposit offer for ${itemNames.join(', ')} Value price ${itemPrices.join(', ')} accepted, go send go go`, config.discord, config.pushover);
           }

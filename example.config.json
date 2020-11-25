@@ -2,6 +2,7 @@
     "steam": false,
     "discord": false,
     "pushover": false,
+    "csgoTraderSend": false,
     "domain": "localhost",
     "identitySecret": "",
     "accountName": "",
