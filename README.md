@@ -3,6 +3,8 @@
 #### USE THIS CODE AT YOUR OWN RISK, I DON'T TAKE RESPONSIBILITY FOR STEAM TRADE BANS
 
 For steam part, you need [SDA](https://github.com/Jessecar96/SteamDesktopAuthenticator) to get the sharedSecret & identitySecret.
+
+To send offers from your browser (mobile confirmation required), get the [CSGOTRADER.APP](https://csgotrader.app/) extension end enable "Send offers based on query params".
 #### If you remove your authenticator from your mobile, you will face 15days tradeban
 
 # How to
@@ -33,6 +35,7 @@ Create a config file (config.json) like:
     "steam": true,
     "discord": true,
     "pushover": false,
+    "csgoTraderSend": false,
     "mainCookie": "PHPSESSID=csogempire_phpsessid-cookie; do_not_share_this_with_anyone_not_even_staff=csogempire_donotsharethiswithanyonenotevenstaff_cookie",
     "port": 3000,
     "domain": "leave-blank-if-steam-false",

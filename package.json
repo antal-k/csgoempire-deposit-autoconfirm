@@ -11,6 +11,7 @@
   "dependencies": {
     "dateformat": "^3.0.3",
     "express": "^4.17.1",
+    "open": "^7.3.0",
     "pushover-notifications": "^1.2.2",
     "request": "^2.88.2",
     "socket.io-client": "^2.3.0",
