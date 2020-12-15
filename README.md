@@ -35,6 +35,7 @@ Create a config file (config.json) like:
     "steam": true,
     "discord": true,
     "pushover": false,
+    "delistThreshold": 5,
     "csgoTraderSend": false,
     "mainCookie": "PHPSESSID=csogempire_phpsessid-cookie; do_not_share_this_with_anyone_not_even_staff=csogempire_donotsharethiswithanyonenotevenstaff_cookie",
     "port": 3000,
