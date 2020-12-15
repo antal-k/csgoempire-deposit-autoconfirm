@@ -2,6 +2,7 @@
     "steam": false,
     "discord": false,
     "pushover": false,
+    "delistThreshold": 5,
     "csgoTraderSend": false,
     "domain": "localhost",
     "identitySecret": "",
